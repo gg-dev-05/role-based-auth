@@ -14,8 +14,9 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const db = firebase.firestore();
-        const data = await db.collection("collection2").get();
+        const data = await db.collection("collection1").get();
         data.docs.map(doc => console.log(doc.data()))
+        setError("Authorized")
       } catch (err) {
         setError("Not Authorized")
       }
