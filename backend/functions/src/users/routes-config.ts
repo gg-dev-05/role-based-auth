@@ -1,36 +1,32 @@
 import { Application } from "express";
-import { create, all, get, patch, remove } from "./controller";
+import { container1, container2, container3, create, test} from "./controller";
 import { isAuthenticated } from "../auth/authenticated";
 import { isAuthorized } from "../auth/authorized";
 
 export function routesConfig(app: Application) {
-	app.post('/users',
-		isAuthenticated,
-		isAuthorized({ hasRole: ['admin', 'manager'] }),
+	app.get('/test',
+		test
+	);	
+
+	app.post('/create',
 		create
 	);
-	// lists all users
-	app.get('/users', [
+
+	app.get('/container1',
 		isAuthenticated,
-		isAuthorized({ hasRole: ['admin', 'manager'] }),
-		all
+		isAuthorized({ hasRole: ['super-admin', 'admin'] }),
+		container1
+	);
+
+	app.get('/container2', [
+		isAuthenticated,
+		isAuthorized({ hasRole: ['super-admin'] }),
+		container2
 	]);
-	// get :id user
-	app.get('/users/:id', [
+
+	app.get('/container3', [
 		isAuthenticated,
-		isAuthorized({ hasRole: ['admin', 'manager'], allowSameUser: true }),
-		get
-	]);
-	// updates :id user
-	app.patch('/users/:id', [
-		isAuthenticated,
-		isAuthorized({ hasRole: ['admin', 'manager'], allowSameUser: true }),
-		patch
-	]);
-	// deletes :id user
-	app.delete('/users/:id', [
-		isAuthenticated,
-		isAuthorized({ hasRole: ['admin', 'manager'] }),
-		remove
+		isAuthorized({ hasRole: ['super-admin', 'admin', 'user'], allowSameUser: true }),
+		container3
 	]);
 }

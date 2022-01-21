@@ -1,12 +1,20 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Card, Button, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link, useHistory } from "react-router-dom"
+
+import axios from "axios"
 
 export default function Dashboard() {
   const [error, setError] = useState("")
   const { currentUser, logout } = useAuth()
   const history = useHistory()
+
+  useEffect(() => {
+    axios.get("http://localhost:5001/role-based-auth-d9af9/us-central1/api/container2").then((res) => {
+      console.log(res);
+    })
+  }, [])
 
   async function handleLogout() {
     setError("")
