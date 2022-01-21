@@ -3,7 +3,7 @@ import { Card, Button, Alert } from "react-bootstrap"
 import { useAuth } from "../contexts/AuthContext"
 import { Link, useHistory } from "react-router-dom"
 
-import axios from "axios"
+import firebase from "firebase"
 
 export default function Dashboard() {
   const [error, setError] = useState("")
@@ -11,9 +11,16 @@ export default function Dashboard() {
   const history = useHistory()
 
   useEffect(() => {
-    axios.get("http://localhost:5001/role-based-auth-d9af9/us-central1/api/container2").then((res) => {
-      console.log(res);
-    })
+    const fetchData = async () => {
+      try {
+        const db = firebase.firestore();
+        const data = await db.collection("collection2").get();
+        data.docs.map(doc => console.log(doc.data()))
+      } catch (err) {
+        setError("Not Authorized")
+      }
+    }
+    fetchData();
   }, [])
 
   async function handleLogout() {

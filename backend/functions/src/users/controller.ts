@@ -1,9 +1,15 @@
 import { Request, Response } from "express";
 import * as admin from "firebase-admin"
+// import { auth } from "firebase-admin";
 
 export async function test(req: Request, res: Response) {
 	res.send("Ok??")
 }
+
+// export async function getAllUsers(req: Request, res: Response) {
+// 	auth	
+// }
+
 export async function create(req: Request, res: Response) {
 	try {
 		const { displayName, password, email, role } = req.body
@@ -17,8 +23,19 @@ export async function create(req: Request, res: Response) {
 			password,
 			email
 		})
-		await admin.auth().setCustomUserClaims(uid, { role })
-		return res.status(201).send({ uid })
+		if (role === "super-admin") {
+			await admin.auth().setCustomUserClaims(uid, {"super-admin":true})
+			return res.status(201).send({ uid })
+		}
+		if (role === "admin") {
+			await admin.auth().setCustomUserClaims(uid, {"admin":true})
+			return res.status(201).send({ uid })
+		}
+		else {
+			await admin.auth().setCustomUserClaims(uid, {"user":true})
+			return res.status(201).send({ uid })
+		}
+
 	} catch (err) {
 		return handleError(res, err)
 	}
